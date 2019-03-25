@@ -1,0 +1,82 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
+```{r}
+library(tidyverse)
+tv_shows<-readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-01-08/IMDb_Economist_tv_ratings.csv")
+```
+```{r}
+colnames(tv_shows)[colnames(tv_shows)=="title"] <- "Program"
+```
+```{r}
+tv_seasons<-tv_shows%>%
+     arrange(desc(seasonNumber))
+```
+```{r}
+tv_longrun<-tv_seasons%>%
+     filter(seasonNumber>=10)%>%
+    group_by(Program)
+```
+```{r}
+tv_longrun_unique<-distinct(tv_longrun,titleId)
+```
+```{r}
+tv_lr<-tv_shows%>%
+     filter(Program %in% tv_longrun_unique$Program)
+```
+```{r}
+ggplot()+
+     geom_line(data=tv_lr,mapping=aes(x=seasonNumber,y=av_rating,color=Program))+
+      theme_bw()+
+      xlab("Season")+
+      ylab("Average Rating")
+```
+```{r}
+comedy<-tv_lr%>%
+     filter(str_detect(tv_lr$genres,"Comedy"))
+```
+```{r}
+ggplot()+
+     geom_line(data=comedy,mapping=aes(x=seasonNumber,y=av_rating,color=Program),na.rm=TRUE)+
+      theme_bw()+
+      xlim(0,15)+
+      ylim(5,9)+
+      xlab("Season")+
+      ylab("Average Rating")
+```
+```{r}
+genre<-separate_rows(tv_shows,genres,sep=",")%>%
+  arrange(genres)%>%
+  group_by(genres, seasonNumber)%>%
+  summarize(mean=mean(av_rating))
+```
+```{r}
+ggplot()+
+  geom_line(data=genre,mapping=aes(x=seasonNumber,y=mean,color=genres))+
+  theme_bw()+
+  labs(title="Average Rating per Season by Genre",x="Season",y="Average Rating")
+```
+```{r}
+genre_short<-genre%>%
+  filter(seasonNumber<=10)%>%
+  filter(!str_detect(genres,"Reality"))
+```
+```{r}
+ggplot()+
+  geom_line(data=genre_short,mapping=aes(x=seasonNumber,y=mean,color=genres))+
+  theme_bw()+
+  labs(title="Average Rating per Season (<10) by Genre",x="Season",y="Average Rating")
+```
+
