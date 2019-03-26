@@ -12,17 +12,17 @@ seattle_pets <- readr::read_csv("https://raw.githubusercontent.com/rfordatascien
 Renaming Variable
 ```{r}
 seattle_pets<-seattle_pets%>% 
-  rename(PetName='Animal\'s Name',PBreed='Primary Breed')
+  rename(PetName='animals_name',PBreed='primary_breed')
 ```
 Sort By Pet Species
 ```{r}
 dogs<-seattle_pets%>%
-  filter(Species=="Dog")%>%
-  select(c(PetName,Species,PBreed))
+  filter(species=="Dog")%>%
+  select(c(PetName,species,PBreed))
 
 cats<-seattle_pets%>%
-  filter(Species=="Cat")%>%
-  select(c(PetName,Species,PBreed))
+  filter(species=="Cat")%>%
+  select(c(PetName,species,PBreed))
 
 other<-seattle_pets%>%
   anti_join(dogs)%>%
@@ -49,7 +49,7 @@ cats_counted$PetName <- factor(cats_counted$PetName) %>%
 
 all_counted<-seattle_pets%>%
   filter(!is.na(PetName))%>%
-  group_by(PetName)%>%
+  group_by(species,PetName)%>%
   summarize(count=n())%>%
   top_n(n=10,wt=count)
 
@@ -79,7 +79,7 @@ print(cat_names)
 ```
 ```{r}
 all_names<-ggplot()+
-  geom_col(data=all_counted,mapping=aes(x=PetName,y=count), fill="purple")+
+  geom_col(data=all_counted,mapping=aes(x=PetName,y=count,fill=species))+
   labs(title="Top Pet Names in Seattle",x="Name",y="Total")+
   coord_flip()+
   theme_bw()
