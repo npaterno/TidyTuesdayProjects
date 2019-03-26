@@ -24,6 +24,7 @@ cats<-seattle_pets%>%
   filter(species=="Cat")%>%
   select(c(PetName,species,PBreed))
 
+#Ended up not using the other data yet. 
 other<-seattle_pets%>%
   anti_join(dogs)%>%
   anti_join(cats)
@@ -49,7 +50,7 @@ cats_counted$PetName <- factor(cats_counted$PetName) %>%
 
 all_counted<-seattle_pets%>%
   filter(!is.na(PetName))%>%
-  group_by(species,PetName)%>%
+  group_by(PetName)%>%
   summarize(count=n())%>%
   top_n(n=10,wt=count)
 
@@ -79,7 +80,7 @@ print(cat_names)
 ```
 ```{r}
 all_names<-ggplot()+
-  geom_col(data=all_counted,mapping=aes(x=PetName,y=count,fill=species))+
+  geom_col(data=all_counted,mapping=aes(x=PetName,y=count),fill="dark red)+
   labs(title="Top Pet Names in Seattle",x="Name",y="Total")+
   coord_flip()+
   theme_bw()
