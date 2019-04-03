@@ -6,11 +6,11 @@ output: html_notebook
 ```{r}
 library(tidyverse)
 ```
-Load the data from the TidyTuesday Github repository
+#Load the data from the TidyTuesday Github repository
 ```{r}
 bike_traffic <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-04-02/bike_traffic.csv")
 ```
-Filter and clean the data to only include month, day and average riders per day.
+#Filter and clean the data to only include month, day and average riders per day.
 ```{r}
 bike_traffic_clean<-bike_traffic%>%
   select(-c(ped_count,crossing,direction))%>%
@@ -21,7 +21,7 @@ bike_traffic_clean<-bike_traffic%>%
   group_by(Mo,Day)%>%
   summarize(avg_bike=mean(count))
 ```
-Split the data into four data sets by season.
+#Split the data into four data sets by season.
 ```{r}
 Winter<-bike_traffic_clean%>%
   filter(Mo %in% c("12","01","02"))
@@ -35,7 +35,7 @@ Summer<-bike_traffic_clean%>%
 Fall<-bike_traffic_clean%>%
   filter(Mo %in% c("09","10","11"))
 ```
-Plot histograms for each season overlayed into one plot.
+#Plot histograms for each season overlayed into one plot.
 ```{r}
 ggplot(mapping=aes(x=avg_bike))+
          geom_histogram(data=Winter, color="purple",fill="purple",alpha=0.2,binwidth=250,boundary=0.4,na.rm=TRUE)+
@@ -46,7 +46,7 @@ ggplot(mapping=aes(x=avg_bike))+
          labs(title="Number of Bike Riders in Seattle per Day", x="Bike Riders per Day", y="Number of Days")+
          theme_bw()
 ```
-Add season variable and join data back into one data set.
+#Add season variable and join data back into one data set.
 ```{r}
 Winter2<-Winter%>%
   mutate(Season="Winter")
@@ -65,7 +65,7 @@ Seasons_data<-Winter2%>%
   full_join(Summer2)%>%
   full_join(Fall2)
 ```
-Plot individual histograms via facet wrap.
+#Plot individual histograms via facet wrap.
 ```{r}
 ggplot(Seasons_data%>%group_by(Season),mapping=aes(x=avg_bike,color=Season,fill=Season))+
   geom_histogram(alpha=0.3,binwidth=250,boundary=0.4,na.rm=TRUE)+
