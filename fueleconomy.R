@@ -1,6 +1,5 @@
 # Load libraries
 library(tidyverse)
-library(ggthemes)
 library(gganimate)
 library(viridis)
 library(ggdark)
@@ -44,9 +43,8 @@ p<-ggplot(american2,
              na.rm = TRUE)+
   scale_x_continuous(limits = c(0,60))+
   scale_y_continuous(limits = c(0,60))+
-  theme_economist()+
   scale_color_viridis_d()+
-  dark_theme_grey()+
+  dark_theme_minimal()+
   theme(panel.grid.major = element_line("Red", 
                                         size = 0.1),
         panel.grid.minor = element_line("Red",
