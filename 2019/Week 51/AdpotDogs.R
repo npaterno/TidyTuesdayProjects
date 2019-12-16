@@ -4,20 +4,6 @@ library(usmap)
 
 #Load Data
 dog_moves <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-12-17/dog_moves.csv')
-#dog_travel <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-12-17/dog_travel.csv')
-#dog_descriptions <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-12-17/dog_descriptions.csv')
-
-exports <- dog_moves %>% 
-  filter(inUS == TRUE) %>% 
-  select(c("location","exported")) %>% 
-  rename(state = location) %>% 
-  replace_na(list(exported=0))
-
-imports <- dog_moves %>% 
-  filter(inUS == TRUE) %>% 
-  select(c("location","imported")) %>% 
-  rename(state = location) %>% 
-  replace_na(list(imported=0))  
 
 plot_data <- dog_moves %>% 
   filter(inUS == TRUE) %>% 
