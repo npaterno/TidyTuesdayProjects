@@ -4,7 +4,11 @@ library(lubridate)
 rainfall <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-01-07/rainfall.csv')
 temperature <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-01-07/temperature.csv')
 
-temp_city_year <- temperature %>% 
+ggplot(data = temperature, 
+       mapping = aes(x = date, y = temperature, color = city_name))+
+  geom_point(na.rm = TRUE)
+
+xtemp_city_year <- temperature %>% 
   mutate(yr = year(date),
          city_name = str_to_title(city_name)) %>% 
   select(-c(date, site_name)) %>% 
