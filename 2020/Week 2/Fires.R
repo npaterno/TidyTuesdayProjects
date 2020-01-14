@@ -4,11 +4,7 @@ library(lubridate)
 rainfall <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-01-07/rainfall.csv')
 temperature <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-01-07/temperature.csv')
 
-ggplot(data = temperature, 
-       mapping = aes(x = date, y = temperature, color = city_name))+
-  geom_point(na.rm = TRUE)
-
-xtemp_city_year <- temperature %>% 
+temp_city_year <- temperature %>% 
   mutate(yr = year(date),
          city_name = str_to_title(city_name)) %>% 
   select(-c(date, site_name)) %>% 
@@ -26,9 +22,13 @@ rainfall_city_yr <- rainfall %>%
 
 plot_data <- left_join(rainfall_city_yr,temp_city_year, by = c("city_name", "yr"))
 
-ggplot(plot_data, aes(yr, mean_temp, group = city_name, color = city_name))+
-  geom_smooth(na.rm = TRUE)
+p <- ggplot(plot_data %>% filter(yr>1960), aes(x = yr, color = city_name))
+            
+p1 <- p+geom_line(aes(y = mean_rain))
 
+p2 <- p1+geom_line(aes(y = mean_temp))
+
+p3 <- p2+scale_y_continuous(sec.axis = sec_axis(~., name = "Temperature [C]"))
 
 # Mapping NSW Current Incidents in R -------------------------------------------
 # AUTHOR: DEAN MARCHIORI
