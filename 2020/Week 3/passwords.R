@@ -23,6 +23,8 @@ ggplot(passwords,
        x = "Character Length",
        y = "Frequency")
 
+ggsave(filename = "histogram.png")
+
 cat_summary <- passwords %>% 
   na.omit() %>% 
   mutate(password_length = str_length(password)) %>% 
@@ -48,3 +50,5 @@ ggplot(cat_summary,
        x = "Password Length",
        y = "Category",
        fill = "Frequency")
+
+ggsave("tile_plot.png")
