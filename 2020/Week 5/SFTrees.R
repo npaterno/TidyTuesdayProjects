@@ -22,8 +22,7 @@ sf_plot_data <- sf_trees %>%
 
 num_years <- length(unique(sf_plot_data$year))
 
-#base_map <- 
-ggmap(sf_map)+
+base_map <- ggmap(sf_map)+
   geom_point(data = sf_plot_data, mapping = aes(longitude, latitude, color = year),
              size = 0.05,
              alpha = 0.2, 
@@ -32,7 +31,7 @@ ggmap(sf_map)+
   
   
 animated_map <- base_map+
-  transition_time(year)+
+  transition_states(year)+
   ease_aes('linear')+
   labs(title = "Trees of San Francisco",
        subtitle = "Year: {closest_state}",
