@@ -23,16 +23,16 @@ sf_plot_data <- sf_trees %>%
 num_years <- length(unique(sf_plot_data$year))
 
 base_map <- ggmap(sf_map)+
-  geom_point(data = sf_plot_data, mapping = aes(longitude, latitude, color = year),
+  geom_point(data = sf_plot_data, mapping = aes(longitude, latitude),
+             color = "blue",
              size = 0.05,
              alpha = 0.2, 
-             na.rm = TRUE)+
-  guides(color = FALSE)
-  
-  
+             na.rm = TRUE)
+
 animated_map <- base_map+
   transition_states(year)+
   ease_aes('linear')+
+  shadow_mark()+
   labs(title = "Trees of San Francisco",
        subtitle = "Year: {closest_state}",
        x = "",
@@ -49,5 +49,3 @@ gif_map <- animate(animated_map,
 
 anim_save(animation = gif_map,
           filename = here::here("trees.gif"))
-
-#NOT SAVING AS ANIMATION!!! SAVES PNG FILES
