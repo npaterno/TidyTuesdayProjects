@@ -3,6 +3,7 @@ library(ggdark)
 library(ggthemes)
 library(ggrepel)
 library(ggalt)
+library(lubridate)
 
 attendance <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-02-04/attendance.csv')
 standings <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-02-04/standings.csv')
@@ -56,7 +57,8 @@ seahawks_2013 <- games %>%
   opp_pts = case_when(
     winner != "Seattle Seahawks" ~ pts_win,
     TRUE ~ pts_loss
-  ))
+  ),
+  date = mdy(paste(date,",",year))) #Need to change last three years to 2014
 
 ggplot(seahawks_2013)+
   geom_dumbbell(aes(x = seattle_pts, xend = opp_pts, y = date), 
@@ -68,12 +70,12 @@ ggplot(seahawks_2013)+
             aes(x = seattle_pts, y = date),
             label = "Seahawks", fontface = "bold",
             color = "#69BE28",
-            hjust = -0.5)+ 
+            hjust = -0.25)+ 
   geom_text(data = filter(seahawks_2013, date == "September 8"),
             aes(x = opp_pts, y = date),
             label = "Opponent", fontface = "bold",
             color = "#D50A0A",
-            hjust = 1.5)+ 
+            hjust = 1.2)+ 
   theme(panel.background = element_rect(fill = "#002145"),
         panel.grid = element_blank())+
   labs(title = "Seattle Seahawks",
