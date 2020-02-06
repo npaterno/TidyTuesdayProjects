@@ -151,7 +151,7 @@ p2 <- ggplot()+
            width = 1,
            stat = "identity")+
   coord_polar("y", start = 0)+
-  scale_fill_viridis_d(option = "magma")+
+  scale_fill_viridis_d(option = "plasma")+
   theme(axis.text = element_blank(),
         panel.background = element_rect(fill = "grey30"),
         plot.background = element_rect(fill = "grey30",
@@ -167,7 +167,8 @@ p2 <- ggplot()+
 grid <- grid.arrange(p1,p2, 
                      nrow = 1,
                      top = grid::textGrob("Points Analysis", 
-                                          grid::gp = gpar(col = "white")),
+                                          gp = grid::gpar(col = "white",
+                                                          fontsize = 20)),
                      bottom = grid::textGrob("Source: Pro Football Reference | Graph: @Mathl3t3",
                                              gp = grid::gpar(col = "white"))
                      )
@@ -175,3 +176,7 @@ grid <- grid.arrange(p1,p2,
   
 cowplot::ggdraw(grid)+
   theme(plot.background = element_rect(fill = "grey30"))
+
+ggsave("points.png",
+       width = 9, 
+       height = 4)
