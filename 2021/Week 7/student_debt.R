@@ -21,4 +21,10 @@ ggplot(student_debt,
     caption = "Source: Urban Institute | Graph: @mathl3t3"
   )+
   dark_mode(theme_foundation())
-  
+
+ggsave("st_debt.png",
+       dpi = "retina",
+       width = 290,
+       height = 166,
+       units = "mm")  
+
