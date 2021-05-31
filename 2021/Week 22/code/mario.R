@@ -1,6 +1,7 @@
 # Load Packages
 library(tidyverse)
 library(extrafont)
+library(hexbin)
 
 # Load Data
 records <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-05-25/records.csv')
@@ -55,3 +56,19 @@ ggsave(filename = "cumulative_records.png",
        path = here::here("2021/Week 22/images"),
        height = 4,
        width = 6)
+
+# Wrangle data: Predict Rainbow Road Record for Three lap 
+
+model_data <- records %>% 
+  filter(track == "Rainbow Road" & type == "Three Lap")
+
+fit <- glm(time ~ system_played + shortcut, data = model_data)
+
+summary(fit)
+
+
+
+
+
+
+
