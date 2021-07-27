@@ -1,6 +1,8 @@
 # Load Packages
 library(tidyverse)
 library(extrafont)
+library(tidymodels)
+library(ranger)
 
 # Load Data
 records <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-05-25/records.csv')
@@ -55,3 +57,41 @@ ggsave(filename = "cumulative_records.png",
        path = here::here("2021/Week 22/images"),
        height = 4,
        width = 6)
+
+# Modeling: Predict Rainbow Road Record for Three lap 
+set.seed(123)
+
+# Wrangle Data: isolate Three Lap Rainbow Road
+model_data <- records %>% 
+  filter(track == "Rainbow Road" & type == "Three Lap")
+
+# Split data
+data_split <- initial_split(model_data, strata = "time", prop = 0.75)
+
+
+rainbow_train <- training(data_split)
+rainbow_test <- testing(data_split)
+
+rf_defaults <- rand_forest(mode = "regression")
+
+preds <- c("shortcut", "date")
+
+rf_xy_fit <- rf_defaults %>% 
+  set_engine("ranger") %>% 
+  fit_xy(
+    x = rainbow_train[, preds],
+    y = log10(rainbow_train$time)
+  )
+
+test_results <- rainbow_test %>% 
+  select(time) %>% 
+  mutate(time = log10(time)) %>% 
+  bind_cols(
+    predict(rf_xy_fit, new_data = rainbow_test[, preds])
+  )
+
+test_results %>% metrics(truth = time, estimate = .pred)
+
+
+
+
