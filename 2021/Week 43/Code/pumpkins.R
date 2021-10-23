@@ -26,11 +26,11 @@ showtext_auto()
 
 # Plots ------------------------------------------------------------------------
 p <- ggplot(top_wa, aes(grower, count))+
-  geom_col(fill = "purple4", color = "darkorange")+
+  geom_col(fill = "purple4", color = "black")+
   coord_flip()+
   labs(
     title = "Back for more?!",
-    subtitle = "Most frequent giant pumpkin growers in Washington state, \n 2013 - 2021",
+    subtitle = "Most frequent giant pumpkin growers\nWashington state, \n2013 - 2021",
     y = "Number of Giant Pumpkins Grown", 
     x = "", 
     caption = "Source: Great Pumpkin Commonwealth via TidyTuesday | Plot: @mathl3t3"
@@ -48,13 +48,16 @@ p <- ggplot(top_wa, aes(grower, count))+
   )
 
 # Add image --------------------------------------------------------------------
-# NEED  TO GET THIS PART TO WORK!
-pumpkin_original <- image_read("2021/Week 43/Images/pumpkin.jpeg")
-pumpkin_resized <- image_resize(pumpkin_original, "0.5x", filter = "Triangle")
+pumpkin_original <- image_read("2021/Week 43/Images/pumpkin.png")
 
-figure <- image_graph(width = 1600, height = 900, res = 150)
-p
-dev.off()
+grob <- grid::rasterGrob(pumpkin_original, x = 0.04, y = 0.99, just = c('left', 'top'), 
+                         width = unit(1, 'inches'))
+g <- ggplotGrob(p)
 
-out <- figure %>% image_composite(pumpkin_resized, offset = "+20+20")
-out
+g <- gtable::gtable_add_grob(
+  g, grob, t = 1, l = 1, b = dim(g)[1], r = dim(g)[2]
+)
+
+ggplot() +
+  annotation_custom(g) +
+  theme_void()
