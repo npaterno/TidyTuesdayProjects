@@ -20,6 +20,24 @@ top_wa <- pumpkins %>%
   slice_max(count, n = 20) %>% 
   mutate(grower = fct_reorder(grower_name, count))
 
+top_wa_summary <- pumpkins %>% 
+  separate(id, into = c("year", "type"), sep = "-") %>% 
+  mutate(across(c(year, weight_lbs, ott, place), parse_number)) %>%
+  filter(grower_name %in% top_wa$grower_name & type =="P") %>% 
+  group_by(grower_name) %>% 
+  summarize(five_num = fivenum(weight_lbs)) %>% 
+  mutate(names = c("min", "q1", "med", "q3", "max")) %>% 
+  pivot_wider(names_from = names, values_from = five_num)
+
+top_wa_boxplot_data <- pumpkins %>% 
+  separate(id, into = c("year", "type"), sep = "-") %>% 
+  mutate(across(c(year, weight_lbs, ott, place), parse_number)) %>%
+  filter(grower_name %in% top_wa$grower_name & type =="P") %>% 
+  group_by(grower_name) %>% 
+  mutate(med = median(weight_lbs)) %>% 
+  ungroup() %>% 
+  mutate(grower = fct_reorder(grower_name, med))
+
 # Font for plots ---------------------------------------------------------------
 font_add_google(name = "Rock Salt", family = "rock")
 showtext_auto()
@@ -46,6 +64,11 @@ p <- ggplot(top_wa, aes(grower, count))+
     panel.grid.major.x = element_line(color = "orange"),
     panel.grid.minor.x = element_line(color = "orange")
   )
+
+ggplot(top_wa_boxplot_data, aes(grower, weight_lbs)) +
+  geom_boxplot()+
+  stat_summary(fun = mean, geom = "point", color = "red")+
+  coord_flip()
 
 # Add image --------------------------------------------------------------------
 pumpkin_original <- image_read("2021/Week 43/Images/pumpkin.png")
